@@ -7,9 +7,9 @@ const qs = require('querystring');
 const app = express();
 const upload = multer();
 
-const ACR_HOST = 'YOUR_ACRCLOUD_HOST';       // Exemple: 'identify-eu-west-1.acrcloud.com'
-const ACR_ACCESS_KEY = 'YOUR_ACRCLOUD_KEY';
-const ACR_ACCESS_SECRET = 'YOUR_ACRCLOUD_SECRET';
+const ACR_HOST = 'identify-eu-west-1.acrcloud.com';       // Exemple: 'identify-eu-west-1.acrcloud.com'
+const ACR_ACCESS_KEY = '92ba8e2285a4204e3a3472ed40efbcb4';
+const ACR_ACCESS_SECRET = 'BzVxeFNf2kDvvrnsOaLxYqKAEZu99G4npPBpzSk6';
 
 app.use(express.static('public')); // Pour servir index.html et assets si besoin
 
