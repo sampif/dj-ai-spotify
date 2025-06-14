@@ -100,7 +100,7 @@
       });
     }
 
-  /*  async function identifyTrack(audioBlob) {
+    async function identifyTrack(audioBlob) {
       const formData = new FormData();
       formData.append('audio', audioBlob);
 
@@ -114,12 +114,7 @@
       } else {
         alert('Track non reconnu.');
       }
-    }*/
-    async function identifyTrack(audioBlob) {
-  // 🧪 DÉMO : morceau fictif (Daft Punk - Get Lucky)
-  const fakeSpotifyId = '2Foc5Q5nqNiosCNqttzHof';
-  fetchSpotifyRecommendations(fakeSpotifyId);
-}
+    }
 
     async function startMicCapture() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
