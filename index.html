@@ -51,28 +51,56 @@
   <div id="bubbles"></div>
 
   <script>
-    let accessToken = null;
+ let accessToken = null;
 
-    function connectSpotify() {
-      const clientId = '674b91068db941b7822295df359afe21';
-      const redirectUri = 'https://sampif.github.io/dj-ai-spotify/callback.html';
-      const scopes = 'user-read-playback-state user-modify-playback-state';
+function connectSpotify() {
+  const clientId = '674b91068db941b7822295df359afe21'; // remplace par ton vrai client ID
+  const redirectUri = 'https://sampif.github.io/dj-ai-spotify/';
+  const scopes = 'user-read-playback-state user-modify-playback-state';
 
-      const authUrl =
-        `https://accounts.spotify.com/authorize?client_id=${clientId}` +
-        `&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&scope=${encodeURIComponent(scopes)}`;
+  const authUrl =
+    `https://accounts.spotify.com/authorize?client_id=${clientId}` +
+    `&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&scope=${encodeURIComponent(scopes)}`;
 
-      window.location.href = authUrl;
+  window.location.href = authUrl;
+}
+
+function getAccessTokenFromUrl() {
+  const hash = window.location.hash;
+  const now = Date.now();
+
+  // 1. On récupère access_token dans l'URL après redirection
+  if (hash.includes('access_token')) {
+    const params = new URLSearchParams(hash.replace('#', '?'));
+    accessToken = params.get('access_token');
+    const expiresIn = parseInt(params.get('expires_in') || '3600', 10); // en secondes
+
+    if (accessToken) {
+      localStorage.setItem('spotify_access_token', accessToken);
+      localStorage.setItem('spotify_token_time', now.toString());
+      localStorage.setItem('spotify_token_expiry', (now + expiresIn * 1000).toString());
+      // Nettoyer l'URL (pour virer le hash)
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
+  }
 
-    function getAccessTokenFromUrl() {
-      const hash = window.location.hash;
-      if (hash) {
-        const params = new URLSearchParams(hash.replace('#', '?'));
-        accessToken = params.get('access_token');
-      }
+  // 2. Sinon on essaie de récupérer un token existant
+  if (!accessToken) {
+    const expiry = parseInt(localStorage.getItem('spotify_token_expiry') || '0', 10);
+    if (now < expiry) {
+      accessToken = localStorage.getItem('spotify_access_token');
+    } else {
+      localStorage.removeItem('spotify_access_token');
+      localStorage.removeItem('spotify_token_time');
+      localStorage.removeItem('spotify_token_expiry');
+      accessToken = null;
     }
+  }
+}
+
+// Appel automatique au chargement
+getAccessTokenFromUrl();
 
     async function fetchSpotifyRecommendations(trackId) {
       if (!accessToken) return;
